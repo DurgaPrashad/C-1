@@ -1,0 +1,129 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+class ShoppingCart {
+public:
+    void startShopping();
+
+private:
+    struct Item {
+        std::string name;
+        int quantity;
+        double price;
+
+        Item(const std::string& itemName, int itemQuantity, double itemPrice)
+            : name(itemName), quantity(itemQuantity), price(itemPrice) {}
+
+        void removeQuantity(int quantityToRemove) {
+            if (quantityToRemove <= quantity) {
+                quantity -= quantityToRemove;
+            } else {
+                std::cout << "Not enough quantity to remove" << std::endl;
+            }
+        }
+
+        std::string toString() {
+            return name + ", quantity: " + std::to_string(quantity) + ", price: $" + std::to_string(price);
+        }
+    };
+
+    std::vector<Item> shoppingCart;
+
+    void addItemToCart();
+    void removeItemFromCart();
+    void viewCart();
+    void checkout();
+};
+
+void ShoppingCart::startShopping() {
+    int choice;
+    while (true) {
+        std::cout << "1. Add item to cart" << std::endl;
+        std::cout << "2. Remove item from cart" << std::endl;
+        std::cout << "3. View cart" << std::endl;
+        std::cout << "4. Checkout" << std::endl;
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addItemToCart();
+                break;
+
+            case 2:
+                removeItemFromCart();
+                break;
+
+            case 3:
+                viewCart();
+                break;
+
+            case 4:
+                checkout();
+                return;
+
+            default:
+                std::cout << "Invalid choice, please try again." << std::endl;
+                break;
+        }
+    }
+}
+
+void ShoppingCart::addItemToCart() {
+    std::string itemName;
+    int itemQuantity;
+    double itemPrice;
+
+    std::cout << "Enter the item name: ";
+    std::cin >> itemName;
+    std::cout << "Enter the item quantity: ";
+    std::cin >> itemQuantity;
+    std::cout << "Enter the item price: $";
+    std::cin >> itemPrice;
+
+    Item newItem(itemName, itemQuantity, itemPrice);
+    shoppingCart.push_back(newItem);
+
+    std::cout << "Item added to cart successfully" << std::endl;
+}
+
+void ShoppingCart::removeItemFromCart() {
+    std::string itemName;
+    int removeItemQuantity;
+
+    std::cout << "Enter the item name: ";
+    std::cin >> itemName;
+    std::cout << "Enter the quantity to remove: ";
+    std::cin >> removeItemQuantity;
+
+    for (auto it = shoppingCart.begin(); it != shoppingCart.end(); ++it) {
+        if (it->name == itemName) {
+            it->removeQuantity(removeItemQuantity);
+            if (it->quantity == 0) {
+                shoppingCart.erase(it);
+            }
+            std::cout << "Item removed from cart successfully" << std::endl;
+            return;
+        }
+    }
+    std::cout << "Item not found in the cart" << std::endl;
+}
+
+void ShoppingCart::viewCart() {
+    std::cout << "Shopping Cart Contents:" << std::endl;
+    for (const auto& item : shoppingCart) {
+        std::cout << item.toString() << std::endl;
+    }
+}
+
+void ShoppingCart::checkout() {
+    std::cout << "Checking out... Thank you for shopping with us!" << std::endl;
+}
+
+int main() {
+    ShoppingCart shoppingCart;
+    shoppingCart.startShopping();
+
+    return 0;
+}
